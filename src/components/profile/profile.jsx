@@ -5,11 +5,14 @@ import { getPosts } from "../../services/getPosts";
 import axios from "axios";
 import { MdModeEdit } from "react-icons/md";
 import { getMedia } from "../../services/getMedia";
+import { useSelector } from "react-redux";
 
 const SERVER_URI = import.meta.env.VITE_SERVER_URI;
 
 export default function UserProfile() {
+  const logedUser = useSelector((state) => state.user.value);
   const [isediting, setIsediting] = useState(false);
+  const [allowEditing, setAllowEditing] = useState(false);
   const [media, setMedia] = useState(null);
   const [user, setUser] = useState(null);
   const user_Name = useParams();
@@ -39,6 +42,14 @@ export default function UserProfile() {
 
     fetchUser();
   }, []);
+
+  useEffect(() => {
+    const isSameUser = logedUser?.user_Name === user?.user_Name;
+
+    setAllowEditing(isSameUser);
+    console.log(isSameUser);
+  }, [logedUser, user]);
+
   const fileInputRef = useRef(null);
 
   const handleButtonClick = () => {
@@ -121,10 +132,10 @@ export default function UserProfile() {
               <img
                 src={user?.media_Key ? media : "/userPlaceholderImage.png"}
                 alt=""
-                className="w-16 h-16 md:w-26 md:h-26 rounded-full"
+                className="w-16 h-16 md:w-26 md:h-26 rounded-full object-cover"
               />
 
-              {isediting && (
+              {allowEditing && isediting && (
                 <div className="absolute inset-0 rounded-full backdrop-blur-sm flex items-center justify-center">
                   {/* Hidden Input (use absolute and opacity-0 to avoid layout shift) */}
                   <input

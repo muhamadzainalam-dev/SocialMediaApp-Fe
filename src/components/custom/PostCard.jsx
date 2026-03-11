@@ -12,6 +12,8 @@ const PostCard = ({ post, index, size = "md" }) => {
   const user = useSelector((state) => state.user.value);
   const [user_Name, setUser_Name] = useState("");
   const [media, setMedia] = useState(null);
+  const [pfMedia, setPfMedia] = useState(null);
+  const [postUser, setPostUser] = useState(null);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(post.like.length);
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -27,6 +29,24 @@ const PostCard = ({ post, index, size = "md" }) => {
   useEffect(() => {
     getMedia(filename).then((e) => setMedia(e.data));
   }, []);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const response = await axios.post(
+        `${SERVER_URI}/getfromusername`,
+        { user_Name: post.user_Name },
+        { withCredentials: true },
+      );
+
+      setPostUser(response.data.media_Key);
+    };
+
+    fetchUser();
+  }, [user_Name]);
+
+  useEffect(() => {
+    getMedia(postUser).then((e) => setPfMedia(e.data));
+  }, [postUser]);
 
   const handleLike = async () => {
     setLiked((p) => !p);
@@ -67,7 +87,7 @@ const PostCard = ({ post, index, size = "md" }) => {
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3">
           <img
-            src="/userPlaceholderImage.png"
+            src={postUser ? pfMedia : "/userPlaceholderImage.png"}
             className={`${sizeClass} rounded-full flex items-center justify-center object-cover`}
           />
           <div className="flex items-center justify-between gap-1.5 flex-wrap font-semibold text-white text-sm sm:text-base">

@@ -15,8 +15,6 @@ A modern, API-driven **social media frontend** built for smooth UX and scalable 
 
 ## 💼 Skills & Tech Used
 
-Tech below is **extracted from this repo’s `package.json`**:
-
 - **Core:** React, React DOM, JavaScript (ES Modules)
 - **Build Tooling:** Vite
 - **Routing:** React Router DOM
